@@ -1,6 +1,7 @@
 package ticket;
 
 public class Ticket {
+  private static final float IVA = 0.21f;
   /**
    * Calculates the total price of a ticket
    * 
@@ -34,7 +35,38 @@ public class Ticket {
    * @return a generated ticket text
    */
   public String generateTicket(float[][] items) {
-    return "";
+    String date = Calculations.generateDate();
+    String time = Calculations.generateTime();
+
+    String bill = String.format("%-25s%5s%15s%10s%n", "Ticket", "Date:", date, time);
+    bill += "-".repeat(55) + "\n";
+    bill += String.format("%-25s%5s%15s%10s%n", "Product", "Units", "Price Unit", "Total");
+    bill += "-".repeat(55) + "\n";
+
+    float subtotal = 0;
+
+    for (int i = 0; i < items.length; i++) {
+      float productId = items[i][0];
+      float units = items[i][1];
+      float priceUnit = items[i][2];
+
+      float total = priceUnit * units;
+      subtotal += total;
+
+      bill += String.format("%-25.0f%4.0f%15.2f%10.2f€%n", productId, units, priceUnit, total);
+    }
+
+    float tax = Tax.tax(subtotal, IVA);
+    float totalWithoutTax = Tax.totalWithoutTax(subtotal, tax);
+
+    bill += "-".repeat(55) + "\n";
+    bill += String.format("%-25s%5.2f€%n", "TAX:", tax);
+    bill += "-".repeat(55) + "\n";
+    bill += String.format("%-24s%5.2f€%n", "TOTAL WHITHOUT TAX:", totalWithoutTax);
+    bill += "-".repeat(55) + "\n";
+    bill += String.format("%-50s%5.2f€", "TOTAL:", tax + totalWithoutTax);
+
+    return bill;
   }
 
   private class Product {

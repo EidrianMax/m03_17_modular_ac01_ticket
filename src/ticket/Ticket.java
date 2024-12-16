@@ -2,6 +2,7 @@ package ticket;
 
 public class Ticket {
   private static final float IVA = 0.21f;
+
   /**
    * Calculates the total price of a ticket
    * 
@@ -15,7 +16,7 @@ public class Ticket {
       total += items[i][2];
     }
 
-    return total;
+    return Calculations.round(total, (byte) 2);
   }
 
   /**
@@ -25,7 +26,7 @@ public class Ticket {
    * @return the total of a product = units * price_per_unit
    */
   private float totalUnit(float[] item) {
-    return item[1] * item[2];
+    return Calculations.round(item[1] * item[2], (byte) 2);
   }
 
   /**
@@ -77,7 +78,36 @@ public class Ticket {
      * @return the product text
      */
     private String product(float product) {
-      return "";
+      switch ((byte) product) {
+        case 1:
+          return "Coffee large";
+
+        case 2:
+          return "Expresso";
+
+        case 3:
+          return "Coffee latte";
+
+        case 4:
+          return "Machiatto";
+
+        case 5:
+          return "Chocolate";
+
+        case 6:
+          return "Frappuccino";
+
+        case 7:
+          return "Coffee mocha";
+
+        case 8:
+          return "Americano";
+
+        case 9:
+          return "Brewed coffee";
+        default:
+          return "";
+      }
     }
 
   }

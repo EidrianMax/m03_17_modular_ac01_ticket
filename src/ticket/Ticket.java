@@ -1,6 +1,7 @@
 package ticket;
 
 public class Ticket {
+  Product product = new Product();
   private static final float IVA = 0.21f;
 
   /**
@@ -13,7 +14,7 @@ public class Ticket {
     float total = 0;
 
     for (int i = 0; i < items.length; i++) {
-      total += items[i][2];
+      total += items[i][1] * items[i][2];
     }
 
     return Calculations.round(total, (byte) 2);
@@ -44,28 +45,27 @@ public class Ticket {
     bill += String.format("%-25s%5s%15s%10s%n", "Product", "Units", "Price Unit", "Total");
     bill += "-".repeat(55) + "\n";
 
-    float subtotal = 0;
-
     for (int i = 0; i < items.length; i++) {
       float productId = items[i][0];
+      String productName = product.product(productId);
       float units = items[i][1];
       float priceUnit = items[i][2];
 
-      float total = priceUnit * units;
-      subtotal += total;
+      float total = totalUnit(items[i]);
 
-      bill += String.format("%-25.0f%4.0f%15.2f%10.2f€%n", productId, units, priceUnit, total);
+      bill += String.format("%-25s%4.0f%15.2f%10.2f€%n", productName, units, priceUnit, total);
     }
 
-    float tax = Tax.tax(subtotal, IVA);
-    float totalWithoutTax = Tax.totalWithoutTax(subtotal, tax);
+    float totalBill = total(items);
+    float tax = Tax.tax(totalBill, IVA);
+    float totalWithoutTax = Tax.totalWithoutTax(totalBill, IVA);
 
     bill += "-".repeat(55) + "\n";
     bill += String.format("%-25s%5.2f€%n", "TAX:", tax);
     bill += "-".repeat(55) + "\n";
     bill += String.format("%-24s%5.2f€%n", "TOTAL WHITHOUT TAX:", totalWithoutTax);
     bill += "-".repeat(55) + "\n";
-    bill += String.format("%-50s%5.2f€", "TOTAL:", tax + totalWithoutTax);
+    bill += String.format("%-48s%5.2f€", "TOTAL:", tax + totalWithoutTax);
 
     return bill;
   }
@@ -78,37 +78,20 @@ public class Ticket {
      * @return the product text
      */
     private String product(float product) {
-      switch ((byte) product) {
-        case 1:
-          return "Coffee large";
+      String[] productsNames = {
+          "NON DIPOSIBLE",
+          "Coffe large",
+          "Expresso",
+          "Coffee latte",
+          "Machiatto",
+          "Chocolate",
+          "Frappuccino",
+          "Coffee mocha",
+          "Americano",
+          "Brewed coffee"
+      };
 
-        case 2:
-          return "Expresso";
-
-        case 3:
-          return "Coffee latte";
-
-        case 4:
-          return "Machiatto";
-
-        case 5:
-          return "Chocolate";
-
-        case 6:
-          return "Frappuccino";
-
-        case 7:
-          return "Coffee mocha";
-
-        case 8:
-          return "Americano";
-
-        case 9:
-          return "Brewed coffee";
-        default:
-          return "";
-      }
+      return productsNames[(int) product];
     }
-
   }
 }

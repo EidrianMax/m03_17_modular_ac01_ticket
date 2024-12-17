@@ -20,6 +20,6 @@ public class Tax {
    * @return total amount without tax value
    */
   static float totalWithoutTax(float total, float tax) {
-    return total - tax(total, tax);
+    return  total - (total * tax);
   }
 }
